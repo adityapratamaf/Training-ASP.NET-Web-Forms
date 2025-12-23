@@ -24,7 +24,9 @@
 
     <asp:Button ID="btnSave" runat="server" Text="Simpan" OnClick="btnSave_Click" />
     <asp:Button ID="btnBack" runat="server" Text="Kembali" OnClick="btnBack_Click" />
-
+    <asp:Button ID="btnReset" runat="server" Text="Reset" OnClick="btnReset_Click" />
+    <asp:Button ID="btnMove" runat="server" Text="Employee List" CausesValidation="false" OnClick="btnMove_Click" />
 </form>
+    
 </body>
 </html>

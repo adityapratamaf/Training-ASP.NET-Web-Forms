@@ -43,7 +43,7 @@ namespace WebApplication.Position
                     var pos = Positions.FirstOrDefault(x => x.Id == EditId.Value);
                     if (pos == null)
                     {
-                        Response.Redirect("~/Position/PositionList.aspx");
+                        Response.Redirect("PositionList.aspx");
                         return;
                     }
 
@@ -90,5 +90,19 @@ namespace WebApplication.Position
         {
             Response.Redirect("PositionList.aspx");
         }
+
+        protected void btnReset_Click(object sender, EventArgs e)
+        {
+            txtName.Text = string.Empty;
+            txtLevel.Text = string.Empty;
+        }
+
+        protected void btnMove_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("~/Employee/EmployeeList.aspx");
+        }
+
+
+
     }
 }

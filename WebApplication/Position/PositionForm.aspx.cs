@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web.UI;
+using WebApplication.Repositories;
 
 using PosModel = WebApplication.Models.Position;
 
@@ -9,19 +8,10 @@ namespace WebApplication.Position
 {
     public partial class PositionForm : Page
     {
-        private const string SessionKey = "Positions";
+        // ✅ pakai repository untuk akses database
+        private readonly PositionRepository _repo = new PositionRepository();
 
-        private List<PosModel> Positions
-        {
-            get
-            {
-                if (Session[SessionKey] == null)
-                    Session[SessionKey] = new List<PosModel>();
-                return (List<PosModel>)Session[SessionKey];
-            }
-            set { Session[SessionKey] = value; }
-        }
-
+        // ambil id dari querystring untuk mode edit
         private int? EditId
         {
             get
@@ -36,17 +26,22 @@ namespace WebApplication.Position
         {
             if (!IsPostBack)
             {
+                // mode edit kalau ada id
                 if (EditId.HasValue)
                 {
                     lblTitle.Text = "Edit Position";
 
-                    var pos = Positions.FirstOrDefault(x => x.Id == EditId.Value);
+                    // ✅ ambil data dari DB
+                    var pos = _repo.GetById(EditId.Value);
+
+                    // kalau tidak ditemukan balik ke list
                     if (pos == null)
                     {
-                        Response.Redirect("PositionList.aspx");
+                        Response.Redirect("~/Position/PositionList.aspx");
                         return;
                     }
 
+                    // isi form
                     txtName.Text = pos.Name;
                     txtLevel.Text = pos.Level;
                 }
@@ -59,36 +54,37 @@ namespace WebApplication.Position
 
         protected void btnSave_Click(object sender, EventArgs e)
         {
-            var list = Positions;
+            // ambil input
+            var name = txtName.Text.Trim();
+            var level = txtLevel.Text.Trim();
 
+            // ✅ jika edit → update DB
             if (EditId.HasValue)
             {
-                var pos = list.FirstOrDefault(x => x.Id == EditId.Value);
-                if (pos != null)
+                _repo.Update(new PosModel
                 {
-                    pos.Name = txtName.Text.Trim();
-                    pos.Level = txtLevel.Text.Trim();
-                }
+                    Id = EditId.Value,
+                    Name = name,
+                    Level = level
+                });
             }
             else
             {
-                int newId = list.Count == 0 ? 1 : list.Max(x => x.Id) + 1;
-
-                list.Add(new PosModel
+                // ✅ jika tambah → insert DB
+                _repo.Insert(new PosModel
                 {
-                    Id = newId,
-                    Name = txtName.Text.Trim(),
-                    Level = txtLevel.Text.Trim()
+                    Name = name,
+                    Level = level
                 });
             }
 
-            Positions = list;
-            Response.Redirect("PositionList.aspx");
+            // kembali ke list
+            Response.Redirect("~/Position/PositionList.aspx");
         }
 
         protected void btnBack_Click(object sender, EventArgs e)
         {
-            Response.Redirect("PositionList.aspx");
+            Response.Redirect("~/Position/PositionList.aspx");
         }
 
         protected void btnReset_Click(object sender, EventArgs e)
@@ -101,8 +97,5 @@ namespace WebApplication.Position
         {
             Response.Redirect("~/Employee/EmployeeList.aspx");
         }
-
-
-
     }
 }

@@ -23,9 +23,27 @@
             <asp:BoundField DataField="Name" HeaderText="Name" />
             <asp:BoundField DataField="Level" HeaderText="Level" />
 
-            <asp:ButtonField Text="Edit" CommandName="EditRow" />
-            <asp:ButtonField Text="Delete" CommandName="DeleteRow" />
+            <asp:TemplateField HeaderText="Action">
+                <ItemTemplate>
+                    <!-- Edit -->
+                    <asp:LinkButton ID="btnEdit" runat="server"
+                        Text="Edit"
+                        CommandName="EditRow"
+                        CommandArgument="<%# Container.DataItemIndex %>" />
+
+                    &nbsp;|&nbsp;
+
+                    <!-- Delete -->
+                    <asp:LinkButton ID="btnDelete" runat="server"
+                        Text="Delete"
+                        CommandName="DeleteRow"
+                        CommandArgument="<%# Container.DataItemIndex %>"
+                        OnClientClick='<%# "return confirm(\"Yakin hapus position: " + Eval("Name") + "?\");" %>' />
+                </ItemTemplate>
+            </asp:TemplateField>
         </Columns>
+
+
     </asp:GridView>
 
 </form>

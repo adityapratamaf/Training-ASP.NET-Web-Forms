@@ -16,14 +16,31 @@
         OnRowCommand="gvEmployees_RowCommand">
 
         <Columns>
-            <asp:BoundField DataField="Id" HeaderText="Id" />
-            <asp:BoundField DataField="Nama" HeaderText="Nama" />
-            <asp:BoundField DataField="Alamat" HeaderText="Alamat" />
-            <asp:BoundField DataField="Email" HeaderText="Email" />
+             <asp:BoundField DataField="Id" HeaderText="Id" />
+             <asp:BoundField DataField="Nama" HeaderText="Nama" />
+             <asp:BoundField DataField="Alamat" HeaderText="Alamat" />
+             <asp:BoundField DataField="Email" HeaderText="Email" />
 
-            <asp:ButtonField Text="Edit" CommandName="EditRow" />
-            <asp:ButtonField Text="Delete" CommandName="DeleteRow" />
+            <asp:TemplateField HeaderText="Action">
+                <ItemTemplate>
+                    <!-- Edit -->
+                    <asp:LinkButton ID="btnEdit" runat="server"
+                        Text="Edit"
+                        CommandName="EditRow"
+                        CommandArgument="<%# Container.DataItemIndex %>" />
+
+                    &nbsp;|&nbsp;
+
+                    <!-- Delete -->
+                    <asp:LinkButton ID="btnDelete" runat="server"
+                        Text="Delete"
+                        CommandName="DeleteRow"
+                        CommandArgument="<%# Container.DataItemIndex %>"
+                        OnClientClick='<%# "return confirm(\"Yakin hapus position: " + Eval("Nama") + "?\");" %>' />
+                </ItemTemplate>
+            </asp:TemplateField>
         </Columns>
+
     </asp:GridView>
 </form>
 </body>
